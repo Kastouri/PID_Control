@@ -56,6 +56,11 @@ The parameters above where used as initialization for the twiddle algorithm. Fur
 - Ki = 0.000114816
 - Kd = 1.96532
 
+## Adjusting the Throttle
+In order to achieve safe driving, the car needs to slow down, when performing strong steering.
+The throttle was set to 0.3. 
+(0.5 * steering_value) is subtracted from the throttle (line 106). Note that the throttle could become negative and cause the car to slow down.
+
 ## Dependencies
 
 * cmake >= 3.5
