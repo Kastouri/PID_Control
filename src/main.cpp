@@ -42,20 +42,17 @@ int main() {
   Twiddle twiddle; 
 
   // parameters vector
-  twiddle.set_p({0.114601, 0.00262198 , 2.36584});
+  twiddle.set_p({0.129228, 0.000114816, 1.96532});//{0.114601, 0.00018, 2.36});//{0.15, 0.0002 , 2.8});
 
   // twiddle vector
-  bool tune = true;
+  const bool tune = false;
   vector<double> dp;
   if (tune) 
-    dp = {twiddle.p[0] * 0.1, twiddle.p[1] * 0.1,twiddle.p[2] * 0.1};
+    dp = {twiddle.p[0] * 0.1, twiddle.p[1] * 0.1, twiddle.p[2] * 0.1};
   else 
     dp = {0 ,0 ,0};
   twiddle.set_dp(dp); //{twiddle.p[0] * 0.1, twiddle.p[1] * 0.1,twiddle.p[2] * 0.1};
-  /**
-   * TODO: Initialize the pid variable.
-   */
-  //pid.Init(0.15, 0.002 , 3.0);
+  
   double best_error = 0;
   double error = 0;
   long long counter = 0;
@@ -63,9 +60,10 @@ int main() {
   long long iteration = 0;
   int param_index = 0;
   bool tweaked_up = true;
+  
 
   h.onMessage([ 
-                &tweaked_up, &param_index, &error, 
+                &tweaked_up, &param_index, &error, &tune,
                 &best_error, &counter, &iteration, &twiddle
                 ]
                 (uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
@@ -88,26 +86,24 @@ int main() {
           double angle = std::stod(j[1]["steering_angle"].get<string>());
           double steer_value;
           double throttle = 0.3;
+          
+
           /**
            * TODO: Calculate steering value here, remember the steering value is
            *   [-1, 1].
            * NOTE: Feel free to play around with the throttle and speed.
            *   Maybe use another PID controller to control the speed!
            */
-
-          
-          // update the errors
-          //pid.UpdateError(cte);
           
           // calculate the total error
           steer_value = twiddle.control_out(cte);
-          //pid.TotalError();
+
           // clip range
           if (steer_value > 1.0) steer_value = 1.0;
           if (steer_value < -1.0) steer_value = -1.0;
           
           // adjust throttle: speeding up when steering is dangerous
-          throttle -= abs(steer_value) * 0.3;
+          throttle -= abs(steer_value) * 0.5;
 
           // DEBUG
           /* std::cout << "Counter: "<< counter <<" CTE: " << cte << " Steering Value: " << steer_value 
@@ -163,10 +159,10 @@ int main() {
               }
             }
             param_index = (param_index + 1) % 3;
-            std::cout<< "Iteration "<< iteration <<" Best Accumulated Squared Error : " << best_error << std::endl;
-            twiddle.print_params();      
+            if (tune) std::cout<< "Iteration "<< iteration <<" Best Accumulated Squared Error : " << best_error << std::endl;
+            if (tune) twiddle.print_params();      
             // restart simulation
-            resetSim(ws);
+            if (tune) resetSim(ws);
             //ws.close();
             // reset error for the next simulation
             error = 0.0;

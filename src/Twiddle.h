@@ -46,6 +46,7 @@ public:
     /**
      * Calculates the controllers output
      * @param cte The current of the cross track error
+     * @param dt time since last call
      */
     double control_out(double cte);
 
