@@ -6,6 +6,11 @@ Self-Driving Car Engineer Nanodegree Program
 The goal of this project is to implement a PID controller for the steering of a car in a simulation.
 The simulator can be found [here](https://github.com/udacity/self-driving-car-sim/releases). The original repository with the starter code of this project can be found [here](https://github.com/udacity/CarND-PID-Control-Project).
 
+## Demo
+<center>
+<img src="images/pid_demo.gif" alt="drawing" width="300"/>   
+</center>
+
 ## PID Controller
 To control the steering of the car, a PID controller was used. The controller tries to minimize the cross track error (cte).
 ## Choosing the Parameters:
